@@ -45,6 +45,10 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v10/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 
+	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	"scontract/docs"
 	scontractmodulekeeper "scontract/x/scontract/keeper"
 )
@@ -98,9 +102,13 @@ type App struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 
+	// wasm keeper
+	WasmKeeper wasmkeeper.Keeper
+
 	// simulation manager
 	sm              *module.SimulationManager
 	ScontractKeeper scontractmodulekeeper.Keeper
+	WasmKey         *storetypes.KVStoreKey
 }
 
 func init() {
@@ -120,6 +128,7 @@ func AppConfig() depinject.Config {
 			// supply custom module basics
 			map[string]module.AppModuleBasic{
 				genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+				wasmtypes.ModuleName:    wasm.AppModuleBasic{},
 			},
 		),
 	)
@@ -180,10 +189,14 @@ func New(
 		&app.ConsensusParamsKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.ParamsKeeper,
+
 		&app.ScontractKeeper,
 	); err != nil {
 		panic(err)
 	}
+
+	// Manually register Wasm interfaces since we aren't using depinject for Wasm
+	wasm.AppModuleBasic{}.RegisterInterfaces(app.interfaceRegistry)
 
 	// add to default baseapp options
 	// enable optimistic execution
@@ -192,8 +205,17 @@ func New(
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
+	// Manually mount Wasm store
+	app.WasmKey = storetypes.NewKVStoreKey(wasmtypes.StoreKey)
+	app.MountKVStores(map[string]*storetypes.KVStoreKey{wasmtypes.StoreKey: app.WasmKey})
+
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {
+		panic(err)
+	}
+
+	// register wasm module
+	if err := app.registerWasmModule(appOpts); err != nil {
 		panic(err)
 	}
 
@@ -215,6 +237,12 @@ func New(
 		if err := app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap()); err != nil {
 			return nil, err
 		}
+
+		// Initialize Wasm params manually
+		if err := app.WasmKeeper.SetParams(ctx, wasmtypes.DefaultParams()); err != nil {
+			return nil, err
+		}
+
 		return app.App.InitChainer(ctx, req)
 	})
 

@@ -82,6 +82,14 @@ func NewRootCmd() *cobra.Command {
 		autoCliOpts.Modules[name] = mod
 	}
 
+	// Register wasm module
+	wasmModules := app.RegisterWasm(clientCtx.Codec)
+	for name, mod := range wasmModules {
+		moduleBasicManager[name] = mod
+	}
+
+	moduleBasicManager.RegisterInterfaces(clientCtx.InterfaceRegistry)
+
 	initRootCmd(rootCmd, clientCtx.TxConfig, moduleBasicManager)
 
 	if err := autoCliOpts.EnhanceRootCommand(rootCmd); err != nil {

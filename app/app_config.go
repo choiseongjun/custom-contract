@@ -38,6 +38,7 @@ import (
 	_ "cosmossdk.io/x/nft/module" // import for side-effects
 	_ "cosmossdk.io/x/upgrade"    // import for side-effects
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config" // import for side-effects
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -83,6 +84,7 @@ var (
 		{Account: nft.ModuleName},
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: icatypes.ModuleName},
+		{Account: icatypes.ModuleName},
 	}
 
 	// blocked account addresses
@@ -124,6 +126,9 @@ var (
 						epochstypes.ModuleName,
 						// ibc modules
 						ibcexported.ModuleName,
+						// ibc modules
+						ibcexported.ModuleName,
+						// chain modules
 						// chain modules
 						scontractmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/beginBlockers
@@ -133,6 +138,8 @@ var (
 						stakingtypes.ModuleName,
 						feegrant.ModuleName,
 						group.ModuleName,
+						group.ModuleName,
+						// chain modules
 						// chain modules
 						scontractmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/endBlockers
@@ -170,6 +177,8 @@ var (
 						ibcexported.ModuleName,
 						ibctransfertypes.ModuleName,
 						icatypes.ModuleName,
+						icatypes.ModuleName,
+						// chain modules
 						// chain modules
 						scontractmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/initGenesis
