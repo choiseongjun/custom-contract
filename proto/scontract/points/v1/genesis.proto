@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package scontract.points.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "scontract/points/v1/params.proto";
+import "scontract/points/v1/point_balance.proto";
+import "scontract/points/v1/settlement.proto";
+import "scontract/points/v1/transaction.proto";
+
+option go_package = "scontract/x/points/types";
+
+// GenesisState defines the points module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  repeated PointBalance point_balance_map = 2 [(gogoproto.nullable) = false];
+  repeated Transaction transaction_list = 3 [(gogoproto.nullable) = false];
+  uint64 transaction_count = 4;
+  repeated Settlement settlement_list = 5 [(gogoproto.nullable) = false];
+  uint64 settlement_count = 6;
+}

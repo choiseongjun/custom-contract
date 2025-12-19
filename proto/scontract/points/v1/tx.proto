@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package scontract.points.v1;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "scontract/points/v1/params.proto";
+
+option go_package = "scontract/x/points/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // UpdateParams defines a (governance) operation for updating the module
+  // parameters. The authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // IssuePoints defines the IssuePoints RPC.
+  rpc IssuePoints(MsgIssuePoints) returns (MsgIssuePointsResponse);
+
+  // SpendPoints defines the SpendPoints RPC.
+  rpc SpendPoints(MsgSpendPoints) returns (MsgSpendPointsResponse);
+
+  // TransferPoints defines the TransferPoints RPC.
+  rpc TransferPoints(MsgTransferPoints) returns (MsgTransferPointsResponse);
+
+  // RequestSettlement defines the RequestSettlement RPC.
+  rpc RequestSettlement(MsgRequestSettlement) returns (MsgRequestSettlementResponse);
+}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "scontract/x/points/MsgUpdateParams";
+
+  // authority is the address that controls the module (defaults to x/gov unless overwritten).
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params defines the module parameters to update.
+
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
+// MsgIssuePoints defines the MsgIssuePoints message.
+message MsgIssuePoints {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string recipient = 2;
+  uint64 amount = 3;
+  string reason = 4;
+}
+
+// MsgIssuePointsResponse defines the MsgIssuePointsResponse message.
+message MsgIssuePointsResponse {}
+
+// MsgSpendPoints defines the MsgSpendPoints message.
+message MsgSpendPoints {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 amount = 2;
+  string description = 3;
+}
+
+// MsgSpendPointsResponse defines the MsgSpendPointsResponse message.
+message MsgSpendPointsResponse {}
+
+// MsgTransferPoints defines the MsgTransferPoints message.
+message MsgTransferPoints {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string recipient = 2;
+  uint64 amount = 3;
+}
+
+// MsgTransferPointsResponse defines the MsgTransferPointsResponse message.
+message MsgTransferPointsResponse {}
+
+// MsgRequestSettlement defines the MsgRequestSettlement message.
+message MsgRequestSettlement {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 amount = 2;
+}
+
+// MsgRequestSettlementResponse defines the MsgRequestSettlementResponse message.
+message MsgRequestSettlementResponse {}

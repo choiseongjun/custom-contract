@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ignite scaffold:*)",
+      "Bash(ignite scaffold list:*)"
+    ]
+  }
+}

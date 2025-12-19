@@ -24,8 +24,9 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
-	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
 	"scontract/app"
+
+	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
 )
 
 func initRootCmd(

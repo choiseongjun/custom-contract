@@ -1,6 +1,8 @@
 package app
 
 import (
+	_ "scontract/x/points/module"
+	pointsmoduletypes "scontract/x/points/types"
 	_ "scontract/x/scontract/module"
 	scontractmoduletypes "scontract/x/scontract/types"
 	"time"
@@ -131,6 +133,7 @@ var (
 						// chain modules
 						// chain modules
 						scontractmoduletypes.ModuleName,
+						pointsmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/beginBlockers
 					},
 					EndBlockers: []string{
@@ -142,6 +145,7 @@ var (
 						// chain modules
 						// chain modules
 						scontractmoduletypes.ModuleName,
+						pointsmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/endBlockers
 					},
 					// The following is mostly only needed when ModuleName != StoreKey name.
@@ -181,6 +185,7 @@ var (
 						// chain modules
 						// chain modules
 						scontractmoduletypes.ModuleName,
+						pointsmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/initGenesis
 					},
 				}),
@@ -280,6 +285,10 @@ var (
 			{
 				Name:   scontractmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&scontractmoduletypes.Module{}),
+			},
+			{
+				Name:   pointsmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&pointsmoduletypes.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

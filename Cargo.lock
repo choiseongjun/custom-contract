@@ -770,6 +770,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "escrow"
+version = "0.1.0"
+dependencies = [
+ "cosmwasm-schema 1.5.11",
+ "cosmwasm-std 1.5.11",
+ "cosmwasm-storage",
+ "cw-multi-test 0.20.1",
+ "cw-storage-plus 1.2.0",
+ "cw2",
+ "schemars",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "faucet"
 version = "0.1.0"
 dependencies = [

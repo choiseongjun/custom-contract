@@ -1,0 +1,11 @@
+syntax = "proto3";
+package scontract.points.v1;
+
+option go_package = "scontract/x/points/types";
+
+// PointBalance defines the PointBalance message.
+message PointBalance {
+  string index = 1;
+  string address = 2;
+  uint64 balance = 3;
+}

@@ -50,6 +50,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	"scontract/docs"
+	pointsmodulekeeper "scontract/x/points/keeper"
 	scontractmodulekeeper "scontract/x/scontract/keeper"
 )
 
@@ -108,6 +109,7 @@ type App struct {
 	// simulation manager
 	sm              *module.SimulationManager
 	ScontractKeeper scontractmodulekeeper.Keeper
+	PointsKeeper    pointsmodulekeeper.Keeper
 	WasmKey         *storetypes.KVStoreKey
 }
 
@@ -191,6 +193,7 @@ func New(
 		&app.ParamsKeeper,
 
 		&app.ScontractKeeper,
+		&app.PointsKeeper,
 	); err != nil {
 		panic(err)
 	}

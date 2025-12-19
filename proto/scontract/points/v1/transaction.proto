@@ -1,0 +1,14 @@
+syntax = "proto3";
+package scontract.points.v1;
+
+option go_package = "scontract/x/points/types";
+
+// Transaction defines the Transaction message.
+message Transaction {
+  uint64 id = 1;
+  string sender = 2;
+  string recipient = 3;
+  uint64 amount = 4;
+  string tx_type = 5;
+  int64 timestamp = 6;
+}

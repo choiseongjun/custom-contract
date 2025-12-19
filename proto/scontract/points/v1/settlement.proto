@@ -1,0 +1,13 @@
+syntax = "proto3";
+package scontract.points.v1;
+
+option go_package = "scontract/x/points/types";
+
+// Settlement defines the Settlement message.
+message Settlement {
+  uint64 id = 1;
+  string requester = 2;
+  uint64 amount = 3;
+  string status = 4;
+  int64 timestamp = 5;
+}

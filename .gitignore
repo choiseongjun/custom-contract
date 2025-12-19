@@ -7,3 +7,16 @@ release/
 *.dot
 *.log
 *.ign
+
+# Rust build artifacts
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# WASM artifacts
+*.wasm
+artifacts/
+
+# Temporary build directory
+temp-build/
