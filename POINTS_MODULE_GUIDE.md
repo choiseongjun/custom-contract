@@ -332,6 +332,12 @@ scontractd tx points spend-points 100 "coffee purchase" \
 
 **목적:** 사용자간 포인트를 전송합니다.
 
+
+scontractd keys show alice -a
+cosmos1hdx677fxqw5ec4qmppg0pk9ct9fevv4wvpw829
+jun@DESKTOP-O314DQJ:/mnt/c/blockpj/custom-contract$ scontractd keys show bob -a
+cosmos17jadufsxh7yz3jc770ezlphj9zgf6ypmm055at
+
 **Protobuf 정의:**
 ```protobuf
 message MsgTransferPoints {
@@ -340,6 +346,12 @@ message MsgTransferPoints {
   uint64 amount = 3;      // 전송할 포인트 양
 }
 ```
+
+
+scontractd tx points issue-points $BOB 1000 "welcome bonus" \
+  --from alice \
+  --chain-id scontract \
+  --yes
 
 **CLI 사용법:**
 ```bash
@@ -351,7 +363,7 @@ scontractd tx points transfer-points [recipient] [amount] \
 
 **예시:**
 ```bash
-scontractd tx points transfer-points cosmos1def...xyz 50 \
+scontractd tx points transfer-points cosmos17jadufsxh7yz3jc770ezlphj9zgf6ypmm055at 50 \
   --from alice \
   --chain-id scontract \
   --yes
@@ -405,7 +417,7 @@ scontractd query points show-point-balance [address] \
 
 **예시:**
 ```bash
-scontractd query points show-point-balance cosmos1abc...xyz
+scontractd query points show-point-balance cosmos17jadufsxh7yz3jc770ezlphj9zgf6ypmm055at
 ```
 
 **응답 예시:**
