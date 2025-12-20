@@ -1,11 +1,12 @@
 version: 1
 validation: sovereign
 default_denom: stake
-accounts: 
+accounts:
 - name: alice
   coins:
   - 20000token
   - 200000000stake
+  - 10000sjcoin
 - name: bob
   coins:
   - 10000token

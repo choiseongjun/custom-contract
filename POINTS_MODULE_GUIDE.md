@@ -790,3 +790,120 @@ import (
 | 날짜 | 버전 | 설명 |
 |------|------|------|
 | 2025-12-19 | 1.0 | 초기 모듈 생성 (스켈레톤) |
+
+
+
+
+
+  전송 예시:
+  scontractd tx bank send alice <받는주소> 1000sjcoin \
+    --chain-id scontract \
+    --gas auto \
+    --gas-adjustment 1.3 \
+    --yes
+
+  bob에게 전송:
+  scontractd tx bank send alice $(scontractd keys show bob -a) 1000sjcoin \
+    --chain-id scontract \
+    --gas auto \
+    --gas-adjustment 1.3 \
+    --yes
+
+  잔액 조회:
+  # alice 잔액
+  scontractd query bank balances $(scontractd keys show alice -a)
+
+  # bob 잔액
+  scontractd query bank balances $(scontractd keys show bob -a)
+
+
+
+   이제 실제 사용된 가스를 확인해보겠습니다:
+
+● Bash(export PATH="$HOME/go/bin:$PATH" && sleep 2 && scontractd query tx 78758BF30F22E1F8A787D6476120FCD6A470CF8B59BEE659BBEDCF44271350A0 --output json 2>&1)
+  ⎿  {
+       "height": "191",
+       "txhash": "78758BF30F22E1F8A787D6476120FCD6A470CF8B59BEE659BBEDCF44271350A0",
+     … +202 lines (ctrl+o to expand)
+
+● 완벽합니다! 실제 데이터를 확인했습니다.
+
+  가스 추정 및 사용량 분석
+
+  가스 추정값 (gas_wanted): 65,362
+  실제 사용량 (gas_used):   48,325
+
+  계산 과정
+
+  1. 시뮬레이션 실행 → 기본 추정: ~50,279 gas
+  2. --gas-adjustment 1.3 적용 → 50,279 × 1.3 = 65,362 gas (여유분 포함)
+  3. 실제 실행 → 48,325 gas 사용
+
+  왜 adjustment를 사용하나?
+
+  실제 사용량(48,325)보다 여유있게 설정(65,362)하는 이유:
+
+  - 시뮬레이션과 실제 실행 환경이 다를 수 있음
+  - 블록체인 상태 변화로 인한 가스 변동
+  - 가스 부족으로 트랜잭션 실패를 방지
+
+  가스 비용 상세 분석
+
+  간단한 bank send 트랜잭션(100 sjcoin 전송)의 가스 소비 구성:
+
+
+
+  가스 추정 핵심 요약
+
+  측정 기준
+
+  1. 시뮬레이션 방식
+  - --gas auto를 사용하면 트랜잭션을 실제로 실행하지 않고 시뮬레이션합니다
+  - 각 오퍼레이션의 가스 소비량을 측정
+  - 총 가스량 계산 후 --gas-adjustment 배수를 곱음
+
+  2. 기본 가스 비용 (auth 모듈 기준)
+
+  트랜잭션 크기: 10 gas per byte
+  서명 검증 (Secp256k1): 1,000 gas
+  KVStore 읽기: ~1,000 gas
+  KVStore 쓰기: ~2,000 gas
+
+  실제 측정 결과 (방금 전 100 sjcoin 전송)
+
+  가스 추정값 (gas_wanted): 65,362
+  실제 사용량 (gas_used):   48,325
+  효율성: 73.9% (실제로 추정치의 약 74%만 사용)
+
+  계산 과정:
+  1. 시뮬레이션으로 기본 추정: ~50,279 gas
+  2. --gas-adjustment 1.3 적용: 50,279 × 1.3 = 65,362 gas
+  3. 실제 실행: 48,325 gas 소비
+
+  왜 adjustment(여유분)가 필요한가?
+
+  - 블록체인 상태가 계속 변화함
+  - 다른 트랜잭션이 먼저 실행될 수 있음
+  - 저장소 크기 변화로 인한 가스 변동
+  - 가스 부족으로 트랜잭션 실패 방지
+
+  권장 adjustment 값
+
+  | 작업 복잡도 | adjustment | 예시                     |
+  |-------------|------------|--------------------------|
+  | 단순        | 1.2 - 1.3  | Bank send, Vote          |
+  | 중간        | 1.3 - 1.5  | Delegate, Contract query |
+  | 복잡        | 1.5 - 2.0  | Contract execute         |
+  | 매우 복잡   | 2.0+       | Contract instantiate     |
+
+  새로 생성한 문서
+
+  상세한 가스 분석 가이드를 만들었습니다:
+  → ./GAS_ANALYSIS.md
+
+  이 문서에는 다음이 포함됩니다:
+  - 가스 측정 기준 상세 설명
+  - 트랜잭션 타입별 예상 가스
+  - CosmWasm 컨트랙트 가스 구조
+  - 가스 최적화 팁
+  - 디버깅 방법
